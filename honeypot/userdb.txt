@@ -1,0 +1,13 @@
+# Lista corta: un userdb permisivo no genera fallos de login.
+root:x:123456
+root:x:password
+root:x:root
+root:x:admin
+root:x:1234
+admin:x:admin
+admin:x:123456
+admin:x:password
+user:x:user
+test:x:test
+ubuntu:x:ubuntu
+oracle:x:oracle
