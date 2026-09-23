@@ -27,7 +27,7 @@ class SpaceSavingTest {
         summary.add(3);
 
         assertArrayEquals(new int[] {1, 2, 3}, summary.top(3));
-        assertEquals(10, summary.estimate(1));
+        assertEquals(10, summary.count(1));
         assertEquals(0, summary.overestimate(1));
     }
 
@@ -63,7 +63,7 @@ class SpaceSavingTest {
         }
 
         long minimaMonitorizada = Arrays.stream(summary.top(64))
-                .mapToLong(summary::estimate).min().orElseThrow();
+                .mapToLong(summary::count).min().orElseThrow();
         assertTrue(minimaMonitorizada > 500_000 / 64.0 * 0.5,
                 "las cuentas heredadas deberian haber crecido: " + minimaMonitorizada);
     }
@@ -82,8 +82,8 @@ class SpaceSavingTest {
 
         for (int key : summary.top(32)) {
             long exacto = real.getOrDefault(key, 0L);
-            assertTrue(summary.estimate(key) >= exacto,
-                    "subestimacion en " + key + ": " + summary.estimate(key) + " < " + exacto);
+            assertTrue(summary.count(key) >= exacto,
+                    "subestimacion en " + key + ": " + summary.count(key) + " < " + exacto);
         }
     }
 
@@ -95,7 +95,7 @@ class SpaceSavingTest {
         }
 
         for (int key : summary.top(4)) {
-            assertTrue(summary.estimate(key) - summary.overestimate(key) >= 1);
+            assertTrue(summary.count(key) - summary.overestimate(key) >= 1);
         }
     }
 
@@ -130,7 +130,7 @@ class SpaceSavingTest {
         summary.reset();
 
         assertEquals(0, summary.top(8).length);
-        assertEquals(0, summary.estimate(1));
+        assertEquals(0, summary.count(1));
     }
 
     @Test

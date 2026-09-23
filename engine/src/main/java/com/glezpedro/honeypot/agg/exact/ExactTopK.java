@@ -39,6 +39,16 @@ public final class ExactTopK implements TopKAggregator {
     }
 
     @Override
+    public long count(int key) {
+        return counts.get(key);
+    }
+
+    @Override
+    public int size() {
+        return counts.size();
+    }
+
+    @Override
     public long memoryBytes() {
         return (long) HashCommon.arraySize(counts.size(), 0.75f) * BYTES_PER_SLOT;
     }

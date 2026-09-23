@@ -66,7 +66,8 @@ public final class SpaceSaving implements TopKAggregator {
         return result;
     }
 
-    public long estimate(int key) {
+    @Override
+    public long count(int key) {
         int slot = position.get(key);
         return slot < 0 ? 0 : counts[slot];
     }
@@ -74,6 +75,11 @@ public final class SpaceSaving implements TopKAggregator {
     public long overestimate(int key) {
         int slot = position.get(key);
         return slot < 0 ? 0 : errors[slot];
+    }
+
+    @Override
+    public int size() {
+        return size;
     }
 
     @Override

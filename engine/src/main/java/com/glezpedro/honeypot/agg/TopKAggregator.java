@@ -6,6 +6,10 @@ public interface TopKAggregator {
 
     int[] top(int k);
 
+    long count(int key);
+
+    int size();
+
     long memoryBytes();
 
     void reset();
