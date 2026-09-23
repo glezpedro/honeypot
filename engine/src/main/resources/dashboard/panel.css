@@ -1,0 +1,201 @@
+:root {
+  --surface: #fcfcfb;
+  --raised: #ffffff;
+  --primary: #0b0b0b;
+  --secondary: #52514e;
+  --muted: #8a8880;
+  --grid: #e4e4e0;
+  --exact: #2a78d6;
+  --sketch: #1baf7a;
+  --accent: #eb6834;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #1a1a19;
+    --raised: #232321;
+    --primary: #ffffff;
+    --secondary: #c3c2b7;
+    --muted: #8f8e85;
+    --grid: #333331;
+    --exact: #3987e5;
+    --sketch: #199e70;
+    --accent: #d95926;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0 24px 96px;
+  background: var(--surface);
+  color: var(--primary);
+  font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { margin: 0; font-weight: 600; }
+h1 { font-size: 19px; letter-spacing: -0.01em; }
+h2 { font-size: 14px; }
+h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+.ask { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+
+main { max-width: 1180px; margin: 0 auto; display: grid; gap: 16px; }
+
+.bar {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 22px 0 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.title p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+
+.readout { display: flex; gap: 26px; }
+.readout div { display: flex; flex-direction: column; align-items: flex-end; }
+.readout b { font-size: 20px; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.readout span { color: var(--muted); font-size: 11px; }
+
+.state::before {
+  content: "";
+  display: inline-block;
+  width: 7px; height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--sketch);
+  vertical-align: 2px;
+}
+.state.paused::before { background: var(--muted); }
+.state.lost::before { background: var(--accent); }
+
+.card {
+  background: var(--raised);
+  border: 1px solid var(--grid);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+
+.card-head {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+.metric .pair { display: flex; gap: 22px; margin-top: 14px; }
+.metric .pair div { display: flex; flex-direction: column; }
+.metric .pair b { font-size: 22px; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.metric .pair span { color: var(--muted); font-size: 11px; }
+.metric .verdict { margin: 12px 0 0; color: var(--secondary); font-size: 12px; }
+
+.exact { color: var(--exact); }
+.sketch { color: var(--sketch); }
+
+.tabs { display: flex; gap: 4px; }
+.tabs button, .speed button {
+  border: 1px solid var(--grid);
+  background: transparent;
+  color: var(--secondary);
+  border-radius: 7px;
+  padding: 5px 11px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.tabs button[aria-selected="true"], .speed button.on {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.legend { display: flex; gap: 18px; align-items: center; color: var(--secondary); font-size: 12px; }
+.legend .hint { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; }
+.swatch { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; }
+.swatch.exact { background: var(--exact); }
+.swatch.sketch { background: var(--sketch); }
+
+#plot { width: 100%; height: 260px; display: block; margin-top: 8px; }
+
+.split { display: grid; grid-template-columns: 1.15fr 1fr; gap: 16px; align-items: start; }
+
+.rankings { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.ranking h3 { display: flex; justify-content: space-between; align-items: baseline; }
+.ranking h3 em { color: var(--muted); font-style: normal; font-size: 11px; letter-spacing: 0; text-transform: none; }
+.ranking ol { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 5px; }
+.ranking li { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; font-size: 12px; }
+.ranking .who { font-variant-numeric: tabular-nums; color: var(--secondary); position: relative; padding: 3px 6px; }
+.ranking .who i {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  border-radius: 0 4px 4px 0;
+  opacity: 0.18;
+}
+.ranking .who span { position: relative; }
+.ranking .hits { font-variant-numeric: tabular-nums; color: var(--primary); }
+
+.feed { list-style: none; margin: 0; padding: 0; max-height: 340px; overflow-y: auto; display: grid; gap: 4px; }
+.feed li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 10px;
+  border-left: 2px solid var(--grid);
+  font-size: 12px;
+}
+.feed li.diverges { border-left-color: var(--accent); }
+.feed .ip { font-variant-numeric: tabular-nums; }
+.feed .kind { color: var(--secondary); }
+.feed .seen { color: var(--muted); font-size: 11px; }
+.feed li.diverges .seen { color: var(--accent); }
+.feed .empty { color: var(--muted); padding: 8px 0; }
+
+table.agreement { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.agreement th, table.agreement td { text-align: right; padding: 9px 0; }
+table.agreement thead th {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+  border-bottom: 1px solid var(--grid);
+}
+table.agreement th:first-child { text-align: left; }
+table.agreement tbody th { font-weight: 400; color: var(--secondary); }
+table.agreement tbody tr + tr th, table.agreement tbody tr + tr td { border-top: 1px solid var(--grid); }
+table.agreement td { font-variant-numeric: tabular-nums; }
+
+.controls {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding: 12px;
+  background: var(--surface);
+  border-top: 1px solid var(--grid);
+}
+.controls > button {
+  border: 1px solid var(--grid);
+  background: transparent;
+  color: var(--primary);
+  border-radius: 7px;
+  padding: 6px 14px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.speed { display: flex; gap: 4px; }
+
+@media (max-width: 900px) {
+  body { padding: 0 16px 96px; }
+  .cards, .split, .rankings { grid-template-columns: 1fr; }
+  table.agreement { font-size: 12px; }
+  .card-head { flex-direction: column; }
+  .readout { gap: 18px; }
+}

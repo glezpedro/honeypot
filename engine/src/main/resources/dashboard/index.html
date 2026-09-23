@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>honeypot · panel en vivo</title>
+<link rel="stylesheet" href="panel.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="title">
+    <h1>Motor de detección</h1>
+    <p id="origin">conectando…</p>
+  </div>
+  <div class="readout">
+    <div><b id="events">—</b><span>eventos</span></div>
+    <div><b id="rate">—</b><span>eventos/s</span></div>
+    <div><b id="windows">—</b><span>ventanas</span></div>
+    <div><b id="state" class="state">—</b><span>estado</span></div>
+  </div>
+</header>
+
+<main>
+
+  <section class="cards" aria-label="Memoria por detección">
+    <article class="card metric" id="card-brute">
+      <h2>Fuerza bruta</h2>
+      <p class="ask">¿cuántos intentos lleva esta IP?</p>
+      <div class="pair">
+        <div><b class="exact" data-field="exact">—</b><span>mapa exacto</span></div>
+        <div><b class="sketch" data-field="sketch">—</b><span>Count-Min Sketch</span></div>
+      </div>
+      <p class="verdict" data-field="verdict">—</p>
+    </article>
+    <article class="card metric" id="card-enum">
+      <h2>Enumeración de usuarios</h2>
+      <p class="ask">¿cuántos usuarios distintos ha probado?</p>
+      <div class="pair">
+        <div><b class="exact" data-field="exact">—</b><span>mapa de conjuntos</span></div>
+        <div><b class="sketch" data-field="sketch">—</b><span>HyperLogLog</span></div>
+      </div>
+      <p class="verdict" data-field="verdict">—</p>
+    </article>
+    <article class="card metric" id="card-rank">
+      <h2>Ranking de atacantes</h2>
+      <p class="ask">¿quiénes son los más activos?</p>
+      <div class="pair">
+        <div><b class="exact" data-field="exact">—</b><span>mapa + ordenación</span></div>
+        <div><b class="sketch" data-field="sketch">—</b><span>Space-Saving</span></div>
+      </div>
+      <p class="verdict" data-field="verdict">—</p>
+    </article>
+  </section>
+
+  <section class="card chart">
+    <div class="card-head">
+      <div>
+        <h2>Memoria dentro de la ventana</h2>
+        <p class="ask">el exacto crece con el tráfico y se vacía al cerrar; el sketch no se mueve</p>
+      </div>
+      <div class="tabs" role="tablist">
+        <button role="tab" data-tab="rank" aria-selected="true">Ranking</button>
+        <button role="tab" data-tab="brute" aria-selected="false">Fuerza bruta</button>
+        <button role="tab" data-tab="enum" aria-selected="false">Enumeración</button>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i class="swatch exact"></i>exacto</span>
+      <span><i class="swatch sketch"></i>probabilístico</span>
+      <span class="hint" id="hover">pasa el ratón por la gráfica</span>
+    </div>
+    <svg id="plot" viewBox="0 0 880 260" role="img"
+         aria-label="Memoria de las dos implementaciones a lo largo del tiempo"></svg>
+  </section>
+
+  <section class="split">
+
+    <article class="card">
+      <div class="card-head">
+        <div>
+          <h2>Los doce más activos</h2>
+          <p class="ask" id="ranking-note">—</p>
+        </div>
+      </div>
+      <div class="rankings">
+        <div class="ranking">
+          <h3 class="exact">exacto<em id="keys-exact">—</em></h3>
+          <ol id="top-exact"></ol>
+        </div>
+        <div class="ranking">
+          <h3 class="sketch">Space-Saving<em id="keys-sketch">—</em></h3>
+          <ol id="top-sketch"></ol>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head">
+        <div>
+          <h2>Alertas</h2>
+          <p class="ask">fuerza bruta y enumeración, más reciente arriba</p>
+        </div>
+      </div>
+      <ul id="feed" class="feed"></ul>
+    </article>
+
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Concordancia entre los dos modos</h2>
+        <p class="ask">las alertas de cada ventana se comparan al cerrarla</p>
+      </div>
+      <p class="ask"><b id="ag-windows">—</b> ventanas cerradas</p>
+    </div>
+    <table class="agreement">
+      <thead>
+        <tr>
+          <th>Detección</th>
+          <th>Coincidentes</th>
+          <th>Falsas del sketch</th>
+          <th>Perdidas por el sketch</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="ag-brute"><th>Fuerza bruta · Count-Min</th><td>—</td><td>—</td><td>—</td></tr>
+        <tr id="ag-enum"><th>Enumeración · HyperLogLog</th><td>—</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<footer class="controls">
+  <button id="toggle">Pausar</button>
+  <div class="speed" role="group" aria-label="Velocidad de reproducción">
+    <button data-scale="1">x1</button>
+    <button data-scale="10" class="on">x10</button>
+    <button data-scale="60">x60</button>
+  </div>
+  <button id="restart">Reiniciar</button>
+</footer>
+
+<script src="panel.js"></script>
+</body>
+</html>
