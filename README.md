@@ -59,6 +59,43 @@ estructura entera.
 
 ---
 
+## El panel
+
+![El panel en marcha: la memoria de cada deteccion, la sierra del mapa exacto cruzando la linea plana de Space-Saving, los dos rankings y la tabla de concordancia](docs/panel.png)
+
+El panel pasa el mismo flujo **a la vez por las dos implementaciones**, evento a evento
+y en el mismo orden. Todo lo que muestra es una comparación directa, no dos ejecuciones
+distintas puestas una al lado de la otra.
+
+**La sierra contra la línea plana.** El mapa exacto crece con cada clave nueva de la
+ventana y se vacía de golpe al cerrarla. Space-Saving no se mueve: mantiene sus 4.096
+contadores ocupen lo que ocupen los datos. El cruce de las dos líneas es el de la
+sección de resultados, ocurriendo en directo.
+
+**Los dos rankings, lado a lado.** La misma lista con las mismas cuentas. Se comparan
+por pertenencia y no por posición: cuando dos IPs empatan, cada estructura deshace el
+empate a su manera y el orden entre ellas no significa nada.
+
+**La tabla de concordancia.** Las alertas de cada ventana se comparan al cerrarla.
+Count-Min Sketch se inventa alguna y **no pierde ninguna**, que es lo que garantiza la
+teoría. HyperLogLog sí pierde: con un umbral de 6 usuarios distintos, el error del
+estimador cae justo donde se decide la alerta.
+
+```sh
+mvn -f engine/pom.xml compile dependency:build-classpath -Dmdep.outputFile=target/cp.txt
+java -cp "engine/target/classes:$(cat engine/target/cp.txt)" com.glezpedro.honeypot.dashboard.Dashboard
+```
+
+Queda en `http://localhost:8080` con un flujo sintético de 1,2 millones de eventos. Con
+la ruta de un `cowrie.json` como argumento reproduce la captura real en su lugar.
+
+El servidor solo escucha en el bucle local y no lleva autenticación. Las direcciones
+reales se muestran con el último octeto oculto, así que cualquier captura del panel es
+publicable tal cual; las sintéticas salen del bloque 198.18.0.0/15, que la RFC 2544
+reserva para bancos de pruebas.
+
+---
+
 ## Los datos
 
 8,4 días de captura continua, del 14 al 23 de septiembre de 2026:
@@ -222,7 +259,8 @@ Requiere Java 21 y Maven.
 mvn -f engine/pom.xml test
 ```
 
-Para reproducir los resultados:
+El panel se levanta con los dos comandos de su propia sección. Para reproducir los
+resultados:
 
 ```sh
 mvn -f engine/pom.xml compile dependency:build-classpath -Dmdep.outputFile=target/cp.txt
@@ -268,6 +306,11 @@ Con una clase corriente esa resta no significaría nada.
 cada uno acumula deriva: a los mil eventos se llevan segundos de retraso. Calculando
 el instante objetivo desde el arranque, un evento lento no descuadra el ritmo medio.
 
+**El panel reproduce en tiempo de evento, no a eventos por segundo.** Avanzar a ritmo
+constante aplanaría el tráfico y con la captura real lo interesante son justo las
+ráfagas. El reloj de los eventos se acelera por un factor, y los silencios largos se
+recortan a un cuarto de segundo para que un hueco de horas no deje el panel parado.
+
 **Los umbrales están medidos, no supuestos.** Los valores iniciales —20 intentos, 10
 usuarios— producían **cero alertas**: el máximo real por IP y minuto resultaron ser 12
 intentos y 9 usuarios. Los atacantes no van a ráfagas, van a ritmo constante durante
@@ -295,9 +338,6 @@ implementado.
 **El motor asume eventos en orden temporal.** El registro de Cowrie lo cumple; un
 evento retrasado caería en la ventana equivocada.
 
-**Sin panel todavía.** El conmutador exacto/probabilístico en vivo está diseñado pero
-no construido.
-
 ---
 
 ## Datos personales
@@ -305,4 +345,5 @@ no construido.
 Las direcciones IP capturadas son datos personales, y las contraseñas que prueban los
 bots proceden en su mayoría de filtraciones reales de terceros. Ni unas ni otras se
 versionan ni aparecen en este documento: los registros en crudo están excluidos del
-repositorio y las direcciones de los ejemplos están enmascaradas.
+repositorio, las direcciones de los ejemplos están enmascaradas y el panel oculta el
+último octeto de las que muestra.
