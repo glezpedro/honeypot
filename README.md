@@ -135,6 +135,12 @@ la forma real del tráfico capturado.
 
 Space-Saving con 4.096 contadores, 144 KB fijos, frente al mapa exacto:
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/memoria-ranking-dark.png">
+  <img alt="Memoria del ranking: el mapa exacto crece por escalones hasta 12,6 MB mientras Space-Saving se mantiene en 144 KB" src="docs/memoria-ranking.png">
+</picture>
+
+
 | Claves | Exacto | Space-Saving | Memoria | Acierto |
 |---:|---:|---:|---:|---:|
 | 1.000 | 24 KB | 144 KB | 6,00x | 100 % |
@@ -143,12 +149,18 @@ Space-Saving con 4.096 contadores, 144 KB fijos, frente al mapa exacto:
 | 100.000 | 1,5 MB | 144 KB | **0,094x** | 100 % |
 | 500.000 | 12,6 MB | 144 KB | **0,012x** | 100 % |
 
-El cruce está en unas 5.000 claves. Por encima, el ahorro crece sin límite porque el
+El cruce está en **6.144 claves**. Por encima, el ahorro crece sin límite porque el
 sketch no crece: mantiene `k` contadores y punto.
 
 ### Fuerza bruta: Count-Min Sketch pierde, y por un buen motivo
 
 Ancho mínimo necesario para mantener las falsas alarmas por debajo del 5 %:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/memoria-fuerza-bruta-dark.png">
+  <img alt="Memoria de la fuerza bruta: el Count-Min Sketch queda siempre por encima del mapa exacto" src="docs/memoria-fuerza-bruta.png">
+</picture>
+
 
 | Claves | Exacto | Count-Min | Memoria | Falsas |
 |---:|---:|---:|---:|---:|
@@ -180,6 +192,12 @@ Los bancos de pruebas abortan si alguna vez ocurriera.
 ### Escalado
 
 2.000.000 de eventos, 50.000 claves, sobre 12 núcleos lógicos:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/escalado-dark.png">
+  <img alt="Curva de escalado: la aceleracion satura en 2,82x frente al ideal lineal" src="docs/escalado.png">
+</picture>
+
 
 | Hilos | Eventos/s | Aceleración | Partición más cargada |
 |---:|---:|---:|---:|
