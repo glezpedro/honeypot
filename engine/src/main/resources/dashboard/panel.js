@@ -234,15 +234,15 @@ async function poll() {
 
 async function control(body) {
   try {
-    const response = await fetch("/api/control", {
+    await fetch("/api/control", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
     });
-    paint(await response.json());
   } catch (error) {
     // El siguiente sondeo ya reflejara el estado real.
   }
+  poll();
 }
 
 document.querySelectorAll(".tabs button").forEach(button => {
@@ -262,8 +262,14 @@ document.querySelectorAll(".speed button").forEach(button => {
   });
 });
 
-document.getElementById("toggle").addEventListener("click", () =>
-  control({ running: !(latest && latest.running) }));
+document.getElementById("toggle").addEventListener("click", () => {
+  const running = !(latest && latest.running);
+  if (latest) {
+    latest.running = running;
+  }
+  document.getElementById("toggle").textContent = running ? "Pausar" : "Reanudar";
+  control({ running });
+});
 document.getElementById("restart").addEventListener("click", () =>
   control({ restart: true }));
 

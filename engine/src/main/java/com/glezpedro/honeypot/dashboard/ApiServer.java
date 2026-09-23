@@ -80,8 +80,10 @@ public final class ApiServer {
         if (body != null && body.path("restart").asBoolean()) {
             session.restart();
         }
-        send(exchange, 200, "application/json; charset=utf-8",
-                mapper.writeValueAsBytes(session.snapshot()));
+        // Sin cuerpo: la instantanea publicada es la de antes del cambio y devolverla
+        // haria que el panel pintase el estado que acaba de dejar de ser cierto.
+        exchange.sendResponseHeaders(204, -1);
+        exchange.close();
     }
 
     private void resource(HttpExchange exchange) throws IOException {
