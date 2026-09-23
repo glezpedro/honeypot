@@ -11,7 +11,7 @@ propio que lleva capturando ataques reales desde el 14 de septiembre de 2026.
 ## El resultado
 
 Para mantener el ranking de atacantes, **Space-Saving ocupa el 1,2 % de la memoria
-del mapa exacto y acierta el 100 %**: 144 KB fijos frente a 12,6 MB con medio millón
+del mapa exacto y acierta el 100 %**: 144 KB fijos frente a 12,0 MB con medio millón
 de claves.
 
 Y el resultado que no se suele contar: **para la detección de fuerza bruta,
@@ -174,7 +174,7 @@ Space-Saving con 4.096 contadores, 144 KB fijos, frente al mapa exacto:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/memoria-ranking-dark.png">
-  <img alt="Memoria del ranking: el mapa exacto crece por escalones hasta 12,6 MB mientras Space-Saving se mantiene en 144 KB" src="docs/memoria-ranking.png">
+  <img alt="Memoria del ranking: el mapa exacto crece por escalones hasta 12,0 MB mientras Space-Saving se mantiene en 144 KB" src="docs/memoria-ranking.png">
 </picture>
 
 
@@ -184,7 +184,7 @@ Space-Saving con 4.096 contadores, 144 KB fijos, frente al mapa exacto:
 | 5.000 | 96 KB | 144 KB | 1,50x | 100 % |
 | 20.000 | 384 KB | 144 KB | **0,375x** | 100 % |
 | 100.000 | 1,5 MB | 144 KB | **0,094x** | 100 % |
-| 500.000 | 12,6 MB | 144 KB | **0,012x** | 100 % |
+| 500.000 | 12,0 MB | 144 KB | **0,012x** | 100 % |
 
 El cruce está en **6.144 claves**. Por encima, el ahorro crece sin límite porque el
 sketch no crece: mantiene `k` contadores y punto.
