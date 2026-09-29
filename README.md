@@ -1,5 +1,7 @@
 # honeypot
 
+[![ci](https://github.com/glezpedro/honeypot/actions/workflows/ci.yml/badge.svg)](https://github.com/glezpedro/honeypot/actions/workflows/ci.yml)
+
 Motor de detección de intrusiones sobre flujos de eventos, con las estructuras de
 agregación intercambiables entre una versión exacta y otra probabilística.
 
