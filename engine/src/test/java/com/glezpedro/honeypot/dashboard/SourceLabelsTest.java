@@ -14,7 +14,7 @@ class SourceLabelsTest {
 
     @Test
     void ocultaElUltimoOcteto() {
-        assertEquals("45.148.10.x", SourceLabels.mask("45.148.10.201"));
+        assertEquals("203.0.113.x", SourceLabels.mask("203.0.113.201"));
     }
 
     @Test

@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CowrieNormalizerTest {
 
     private static final String LOGIN_FAILED = """
-            {"eventid":"cowrie.login.failed","src_ip":"45.1.2.3","username":"root",            "password":"x","epoch":1700000000000,"timestamp":"2023-11-14T22:13:20.000000Z"}""";
+            {"eventid":"cowrie.login.failed","src_ip":"198.51.100.3","username":"root",            "password":"x","epoch":1700000000000,"timestamp":"2023-11-14T22:13:20.000000Z"}""";
 
     private static final String LOGIN_SUCCESS = """
-            {"eventid":"cowrie.login.success","src_ip":"45.1.2.3","username":"admin",            "password":"admin","epoch":1700000001000,"timestamp":"2023-11-14T22:13:21.000000Z"}""";
+            {"eventid":"cowrie.login.success","src_ip":"198.51.100.3","username":"admin",            "password":"admin","epoch":1700000001000,"timestamp":"2023-11-14T22:13:21.000000Z"}""";
 
     private static final String KEX = """
-            {"eventid":"cowrie.client.kex","src_ip":"45.1.2.3","epoch":1700000002000}""";
+            {"eventid":"cowrie.client.kex","src_ip":"198.51.100.3","epoch":1700000002000}""";
 
     @Test
     void traduceLosCamposDeCowrieAlEsquemaComun(@TempDir Path dir) throws IOException {
@@ -34,7 +34,7 @@ class CowrieNormalizerTest {
 
         assertEquals(1, events.size());
         assertEquals(1700000000000L, events.timestamp(0));
-        assertEquals("45.1.2.3", sources.value(events.source(0)));
+        assertEquals("198.51.100.3", sources.value(events.source(0)));
         assertEquals("root", actors.value(events.actor(0)));
         assertEquals(Action.LOGIN, events.action(0));
         assertEquals(Outcome.FAILURE, events.outcome(0));
