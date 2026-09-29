@@ -8,6 +8,8 @@ agregación intercambiables entre una versión exacta y otra probabilística.
 Los datos no son sintéticos ni de un repositorio público: salen de un honeypot SSH
 propio que lleva capturando ataques reales desde el 14 de septiembre de 2026.
 
+![El panel en vivo: en el ranking, el mapa exacto sube por escalones y se vacia al cerrar cada ventana mientras Space-Saving se queda plano en 144 KB; en fuerza bruta, el Count-Min Sketch se queda muy por encima del exacto](docs/panel.gif)
+
 ---
 
 ## El resultado
