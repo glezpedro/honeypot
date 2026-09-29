@@ -85,9 +85,18 @@ Count-Min Sketch se inventa alguna y **no pierde ninguna**, que es lo que garant
 teoría. HyperLogLog sí pierde: con un umbral de 6 usuarios distintos, el error del
 estimador cae justo donde se decide la alerta.
 
+Lo más rápido es el JAR de la [última versión](https://github.com/glezpedro/honeypot/releases/latest),
+que solo necesita Java 21:
+
 ```sh
-mvn -f engine/pom.xml compile dependency:build-classpath -Dmdep.outputFile=target/cp.txt
-java -cp "engine/target/classes:$(cat engine/target/cp.txt)" com.glezpedro.honeypot.dashboard.Dashboard
+java -jar honeypot-1.0.0.jar
+```
+
+O compilándolo desde el código:
+
+```sh
+mvn -f engine/pom.xml package
+java -jar engine/target/honeypot-1.0.0.jar
 ```
 
 Queda en `http://localhost:8080` con un flujo sintético de 1,2 millones de eventos. Con
@@ -263,17 +272,15 @@ Requiere Java 21 y Maven.
 mvn -f engine/pom.xml test
 ```
 
-El panel se levanta con los dos comandos de su propia sección. Para reproducir los
-resultados:
+El panel se levanta como se explica en su propia sección. El JAR lleva dentro todas las
+dependencias, así que los resultados se reproducen con él:
 
 ```sh
-mvn -f engine/pom.xml compile dependency:build-classpath -Dmdep.outputFile=target/cp.txt
-java -cp "engine/target/classes:$(cat engine/target/cp.txt)" com.glezpedro.honeypot.bench.TopKSizing 4096
-java -cp "engine/target/classes:$(cat engine/target/cp.txt)" com.glezpedro.honeypot.bench.SketchSizing 0.05
-java -cp "engine/target/classes:$(cat engine/target/cp.txt)" com.glezpedro.honeypot.bench.ScalingBench
+mvn -f engine/pom.xml package
+java -cp engine/target/honeypot-1.0.0.jar com.glezpedro.honeypot.bench.TopKSizing 4096
+java -cp engine/target/honeypot-1.0.0.jar com.glezpedro.honeypot.bench.SketchSizing 0.05
+java -cp engine/target/honeypot-1.0.0.jar com.glezpedro.honeypot.bench.ScalingBench
 ```
-
-En Windows el separador del classpath es `;` en lugar de `:`.
 
 Los guiones de `honeypot/` despliegan el honeypot sobre una máquina Ubuntu: mudan el
 SSH de administración a otro puerto, instalan Cowrie sin privilegios, redirigen el 22
