@@ -322,10 +322,12 @@ constante aplanaría el tráfico y con la captura real lo interesante son justo 
 ráfagas. El reloj de los eventos se acelera por un factor, y los silencios largos se
 recortan a un cuarto de segundo para que un hueco de horas no deje el panel parado.
 
-**Los umbrales están medidos, no supuestos.** Los valores iniciales —20 intentos, 10
-usuarios— producían **cero alertas**: el máximo real por IP y minuto resultaron ser 12
-intentos y 9 usuarios. Los atacantes no van a ráfagas, van a ritmo constante durante
-horas para no disparar limitadores de tasa.
+**Los umbrales están medidos, no supuestos.** Los valores de partida —20 intentos y 10
+usuarios por minuto— solo veían las ráfagas, y las ráfagas son raras: una IP llegó a
+871 intentos en un minuto, pero los pares IP-minuto por encima de 20 son el 0,3 %. El
+grueso del ataque va a ritmo fijo durante horas: el 90 % no pasa de 12 intentos por
+minuto y el 99 % no pasa de 13. Con 10 intentos y 6 usuarios, las alertas de fuerza
+bruta pasan de 28 a 2.305 en los mismos 8,4 días.
 
 ---
 
@@ -339,6 +341,13 @@ analítico de un sketch, que sí es exacto.
 Con tráfico real, donde la mayoría de atacantes prueban pocos usuarios, el conjunto
 exacto gana. El modo disperso de HLL++ existe precisamente para ese caso y no está
 implementado.
+
+**Contar contraseñas en lugar de usuarios no salvaría a HyperLogLog.** Por clave, el
+estimador ocupa menos que el conjunto exacto a partir de 25 elementos distintos, y en
+una ventana de 60 segundos una IP no puede probar más contraseñas que intentos: solo
+llegan a 25 el 0,14 % de los pares IP-minuto. Con ventanas de una hora serían el 15 %,
+pero cada alerta llegaría con hasta una hora de retraso. Lo que condena al estimador es
+la ventana, no el campo.
 
 **El motor asume eventos en orden temporal.** El registro de Cowrie lo cumple; un
 evento retrasado caería en la ventana equivocada.
