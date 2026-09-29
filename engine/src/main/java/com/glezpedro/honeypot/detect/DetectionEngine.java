@@ -66,20 +66,43 @@ public final class DetectionEngine implements EventSink {
     }
 
     public void flush() {
+        Ranking ranking = close();
+        for (int attacker : ranking.keys()) {
+            alerts.accept(new Alert(DetectionType.TOP_ATTACKERS, attacker, ranking.window()));
+        }
+    }
+
+    // Cierra la ventana y devuelve el ranking en lugar de emitirlo: en ejecucion
+    // particionada ese ranking es solo local y hay que fusionarlo con los demas.
+    Ranking close() {
         if (window == Long.MIN_VALUE) {
-            return;
+            return Ranking.EMPTY;
         }
-        for (int attacker : activity.top(thresholds.topK())) {
-            alerts.accept(new Alert(DetectionType.TOP_ATTACKERS, attacker, window));
+        int[] keys = activity.top(thresholds.topK());
+        long[] counts = new long[keys.length];
+        for (int i = 0; i < keys.length; i++) {
+            counts[i] = activity.count(keys[i]);
         }
+        Ranking ranking = new Ranking(window, keys, counts);
         loginAttempts.reset();
         distinctUsers.reset();
         activity.reset();
         bruteForceAlerted.clear();
         enumerationAlerted.clear();
+        window = Long.MIN_VALUE;
+        return ranking;
+    }
+
+    DetectionThresholds thresholds() {
+        return thresholds;
     }
 
     public long memoryBytes() {
         return loginAttempts.memoryBytes() + distinctUsers.memoryBytes() + activity.memoryBytes();
+    }
+
+    record Ranking(long window, int[] keys, long[] counts) {
+
+        static final Ranking EMPTY = new Ranking(Long.MIN_VALUE, new int[0], new long[0]);
     }
 }

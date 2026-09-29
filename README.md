@@ -298,6 +298,17 @@ tras cada suma se consulta esa clave concreta. Esto está codificado en las inte
 `CountAggregator` no tiene `keys()` y `CardinalityAggregator` sí. Como efecto
 secundario, las alertas salen en el instante en que se cruza el umbral.
 
+**La ventana la cierra el productor, no cada partición.** Con el estado repartido por
+IP, la fuerza bruta y la enumeración salen idénticas a las de un solo hilo sin hacer
+nada. El ranking no: cada partición solo conoce el suyo. Como una IP vive en una sola
+partición, el top global está siempre dentro de la unión de los locales y basta con
+quedarse con los K mayores. Lo difícil es saber cuándo han terminado todas, porque una
+partición sin tráfico no se entera de que la ventana ha cambiado. El hilo productor sí
+lo ve, porque ve todos los eventos: antes de pasar el primero de la ventana nueva manda
+un aviso de cierre por cada cola, y como las colas son FIFO ninguna partición empieza
+una ventana sin haber entregado la anterior. El ranking sale igual que el de un solo
+hilo, y el coste no se distingue del ruido de la medición.
+
 **`Alert` es un `record`.** Su `equals` por valor es lo que permite meter las alertas
 de ambos modos en dos conjuntos y restarlos para contar las perdidas y las sobrantes.
 Con una clase corriente esa resta no significaría nada.
@@ -319,12 +330,6 @@ horas para no disparar limitadores de tasa.
 ---
 
 ## Limitaciones conocidas
-
-**El ranking no particiona.** Con estado repartido por clave, la fuerza bruta y la
-enumeración son **idénticas** a la ejecución de un solo hilo. El ranking no: cada
-partición emite el suyo. La unión sí contiene siempre el top global —una clave del top
-vive en una sola partición y allí está al menos igual de arriba— así que son
-candidatos que necesitan una fusión final. Está sin implementar.
 
 **`memoryBytes()` es una estimación razonada** del tamaño de tabla a partir del factor
 de carga, no una medida del montón. Suficiente para comparar contra el cálculo

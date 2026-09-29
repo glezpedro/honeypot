@@ -81,7 +81,8 @@ public final class ScalingBench {
             elapsed = System.nanoTime() - start;
             maxShare = 1;
         } else {
-            PartitionedEngine partitioned = new PartitionedEngine(threads, () -> engine(alerts));
+            PartitionedEngine partitioned =
+                    new PartitionedEngine(threads, () -> engine(alerts), alert -> alerts.increment());
             start = System.nanoTime();
             new Replayer(stream).replay(partitioned);
             partitioned.close();
